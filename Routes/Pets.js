@@ -4,11 +4,11 @@ const router = express.Router();
 
 //Register Pet
 router.post('/', async (req, res) => {
-  const { nome, especie, raca, idade, peso } = req.body;
+  const { nome, especie, owner_id} = req.body;
   try {
     const [result] = await db.query(
-      'INSERT INTO pet (nome, especie, raca, idade, peso) VALUES (?, ?, ?, ?, ?)',
-      [nome, especie, raca, idade, peso]
+      'INSERT INTO pet (nome, especie, owner_id) VALUES (?, ?, ?)',
+      [nome, especie, owner_id]
     );
     res.status(201).json({ id: result.insertId });
   } catch (err) {
@@ -29,12 +29,12 @@ router.get('/', async (req, res) => {
 //Update Pet - Possui controle de Versão
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { nome, especie, raca, idade, peso, versao } = req.body;
+  const { nome, especie, owner_id, versao } = req.body;
   try {
     const [result] = await db.query(
-      `UPDATE pet SET nome=?, especie=?, raca=?, idade=?, peso=?, versao=versao+1
-       WHERE id_pet=? AND versao=?`,
-      [nome, especie, raca, idade, peso, id, versao]
+      `UPDATE pet SET nome=?, especie=?, owner_id=?, versao=versao+1
+       WHERE id=? AND versao=?`,
+      [nome, especie, owner_id, versao]
     );
 
     if (result.affectedRows === 0) {
@@ -51,7 +51,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    await db.query('DELETE FROM pet WHERE id_pet = ?', [id]);
+    await db.query('DELETE FROM pet WHERE id = ?', [id]);
     res.send('Pet removido com sucesso.');
   } catch (err) {
     res.status(500).send('Erro ao remover pet: ' + err);

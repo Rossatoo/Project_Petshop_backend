@@ -37,7 +37,7 @@ router.put('/:id', async (req, res) => {
   try {
     const [result] = await db.query(
       `UPDATE prontuario SET descricao=?, diagnostico=?, id_pet=?, versao=versao+1
-       WHERE id_prontuario=? AND versao=?`,
+       WHERE id=? AND versao=?`,
       [descricao, diagnostico, id_pet, id, versao]
     );
 
@@ -54,7 +54,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    await db.query('DELETE FROM prontuario WHERE id_prontuario = ?', [id]);
+    await db.query('DELETE FROM prontuario WHERE id = ?', [id]);
     res.send('Prontuário removido com sucesso.');
   } catch (err) {
     res.status(500).send('Erro ao remover prontuário: ' + err);
